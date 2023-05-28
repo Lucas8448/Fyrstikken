@@ -12,7 +12,7 @@ const LoginPage = () => {
   return (
     <div className="flex flex-col justify-between min-h-screen py-4 sm:py-12 px-4 sm:px-6 lg:px-8 bg-black">
       <video autoPlay loop muted className="absolute w-full h-full object-cover" style={{ zIndex: -1 }}>
-        <source src="your-video-source.mp4" type="public/mp4" />
+        <source src="your-video-source.mp4" type="video/mp4" />
       </video>
       <header className="text-center text-white py-2 sm:py-4 mb-4 sm:mb-8 w-full">
         <h1 className="font-bold text-2xl sm:text-4xl">Fyrstikken</h1>
