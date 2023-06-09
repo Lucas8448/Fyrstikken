@@ -1,12 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const [error, setError] = useState(null);
 
-  const handleSubmit = event => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    navigate('/vote');
+    const username = event.target.username.value;
+    const password = event.target.password.value;
+
+    try {
+      const response = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: username, password:password }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        navigate('/vote');
+      } else {
+        setError('Invalid login credentials');
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again later.');
+    }
   };
 
   return (
@@ -20,21 +39,22 @@ const LoginPage = () => {
       <div className="flex flex-col justify-center max-w-md w-full mx-auto p-4 sm:p-6 bg-white rounded-lg shadow-md">
         <div>
           <h2 className="mt-4 sm:mt-6 text-center text-2xl sm:text-3xl font-bold text-272727">
-            Logg inn i din skole konto
+            Oppgi utdelt brukernavn og passord
           </h2>
         </div>
         <form className="mt-4 sm:mt-8 space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
           <input type="hidden" name="remember" value="true" />
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
-              <label htmlFor="email-address" className="sr-only">E-postadresse</label>
-              <input id="email-address" name="email" type="email" autoComplete="email" required className="appearance-none rounded-none relative block w-full px-2 sm:px-3 py-1 sm:py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-8497f6 focus:border-8497f6 focus:z-10 sm:text-sm" placeholder="E-postadresse" />
+              <label htmlFor="username-address" className="sr-only">Brukernavn</label>
+              <input id="username" name="username" type="text" autoComplete="username" required className="appearance-none rounded-none relative block w-full px-2 sm:px-3 py-1 sm:py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-8497f6 focus:border-8497f6 focus:z-10 sm:text-sm" placeholder="Brukernavn" />
             </div>
             <div>
               <label htmlFor="password" className="sr-only">Passord</label>
               <input id="password" name="password" type="password" autoComplete="current-password" required className="appearance-none rounded-none relative block w-full px-2 sm:px-3 py-1 sm:py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-8497f6 focus:border-8497f6 focus:z-10 sm:text-sm" placeholder="Passord" />
             </div>
           </div>
+          {error && <div className="text-red-500 text-center">{error}</div>}
           <div>
             <button type="submit" className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
               Logg inn
