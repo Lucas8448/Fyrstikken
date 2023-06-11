@@ -1,75 +1,129 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const LoginPage = () => {
+const Vote = () => {
   const navigate = useNavigate();
-  const [error, setError] = useState(null);
-  const [username] = useState('');
-  const [password] = useState('');
+  const [authenticated, setAuthenticated] = useState(false);
+  const [votes, setVotes] = useState({
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+    6: 0,
+    7: 0,
+    8: 0,
+    9: 0,
+    10: 0,
+    11: 0,
+    12: 0,
+    13: 0,
+    14: 0
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState(null);
+
+  const categories = {
+    1: ['--Ingen valgt--', 'abc', '123'],
+    2: ['--Ingen valgt--', 'abc', '123'],
+    3: ['--Ingen valgt--', 'abc', '123'],
+    4: ['--Ingen valgt--', 'abc', '123'],
+    5: ['--Ingen valgt--', 'abc', '123'],
+    6: ['--Ingen valgt--', 'abc', '123'],
+    7: ['--Ingen valgt--', 'abc', '123'],
+    8: ['--Ingen valgt--', 'abc', '123'],
+    9: ['--Ingen valgt--', 'abc', '123'],
+    10: ['--Ingen valgt--', 'abc', '123'],
+    11: ['--Ingen valgt--', 'abc', '123'],
+    12: ['--Ingen valgt--', 'abc', '123'],
+    13: ['--Ingen valgt--', 'abc', '123'],
+    14: ['--Ingen valgt--', 'abc', '123'],
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setAuthenticated(true);
+    } else {
+      navigate('/login');
+    }
+  }, [navigate]);
+
+  const handleChange = (category, event) => {
+    setVotes({
+      ...votes,
+      [category]: parseInt(event.target.value, 10)
+    });
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsLoading(true);
+    const token = localStorage.getItem('token');
     try {
-      const response = await fetch('http://localhost:5000/login', {
+      const response = await fetch('http://localhost:5000/vote', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: username, password: password }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ votes: votes })
       });
 
-      console.assert(response.ok, "Network response was not ok.");
-
       const data = await response.json();
-      console.assert(data != null, "Data is null.");
-      
       if (data.success) {
-        localStorage.setItem('username', username);
-        localStorage.setItem('token', data.token);
-        navigate('/vote');
+        setSuccess(true);
       } else {
-        setError('Invalid login credentials');
+        setSuccess(false);
       }
-    } catch (err) {
-      setError('An error occurred. Please try again later.');
+    } catch (error) {
+      console.error('Failed to submit votes', error);
+      setSuccess(false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col justify-between min-h-screen py-4 sm:py-12 px-4 sm:px-6 lg:px-8 bg-black">
-      <header className="text-center text-white py-2 sm:py-4 mb-4 sm:mb-8 w-full">
-        <h1 className="font-bold text-2xl sm:text-4xl">Fyrstikken</h1>
-      </header>
-      <div className="flex flex-col justify-center max-w-md w-full mx-auto p-4 sm:p-6 bg-white rounded-lg shadow-md">
-        <div>
-          <h2 className="mt-4 sm:mt-6 text-center text-2xl sm:text-3xl font-bold text-272727">
-            Oppgi utdelt brukernavn og passord
-          </h2>
-        </div>
-        <form className="mt-4 sm:mt-8 space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
-          <input type="hidden" name="remember" value="true" />
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="username-address" className="sr-only">Brukernavn</label>
-              <input id="username" name="username" type="text" autoComplete="username" required className="appearance-none rounded-none relative block w-full px-2 sm:px-3 py-1 sm:py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-8497f6 focus:border-8497f6 focus:z-10 sm:text-sm" placeholder="Brukernavn" />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">Passord</label>
-              <input id="password" name="password" type="password" autoComplete="current-password" required className="appearance-none rounded-none relative block w-full px-2 sm:px-3 py-1 sm:py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-8497f6 focus:border-8497f6 focus:z-10 sm:text-sm" placeholder="Passord" />
-            </div>
-          </div>
-          {error && <div className="text-red-500 text-center">{error}</div>}
-          <div>
-            <button type="submit" className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-              Logg inn
-            </button>
-          </div>
-        </form>
-      </div>
-      <footer className="text-center text-white py-2 sm:py-4 w-full">
-        <p className="font-bold text-lg sm:text-xl">Fyrstikkalleen Skole (F21)</p>
-        <p>Følg oss på Instagram</p>
-      </footer>
+    <div className="h-screen flex flex-col items-center justify-center bg-gray-100">
+      {authenticated ? (
+        <>
+          <h1 className="text-5xl font-bold text-gray-800 mb-4">Welcome to the voting page</h1>
+          {isLoading ? (
+            <p>Loading...</p>
+          ) : success !== null ? (
+            success ? (
+              <p className="text-green-500">Your votes have been successfully submitted!</p>
+            ) : (
+              <p className="text-red-500">Failed to submit votes. Please try again.</p>
+            )
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {Object.keys(categories).map((category) => (
+                <div key={category}>
+                  <label>
+                    Select for category {category}:
+                    <select name={`category-${category}`} className="ml-2" onChange={(e) => handleChange(category, e)}>
+                      {categories[category].map((option, index) => (
+                        <option key={index} value={index}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+              ))}
+              <button type="submit" className="py-2 px-4 bg-blue-500 text-white rounded">
+                Submit Vote
+              </button>
+            </form>
+          )}
+        </>
+      ) : (
+        <p>Loading...</p>
+      )}
     </div>
   );
 };
 
-export default LoginPage;
+export default Vote;
