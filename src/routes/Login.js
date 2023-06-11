@@ -4,12 +4,11 @@ import { useNavigate } from 'react-router-dom';
 const LoginPage = () => {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
+  const [username] = useState('');
+  const [password] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const username = event.target.username.value;
-    const password = event.target.password.value;
-
     try {
       const response = await fetch('http://localhost:5000/login', {
         method: 'POST',
@@ -17,7 +16,11 @@ const LoginPage = () => {
         body: JSON.stringify({ username: username, password: password }),
       });
 
+      console.assert(response.ok, "Network response was not ok.");
+
       const data = await response.json();
+      console.assert(data != null, "Data is null.");
+      
       if (data.success) {
         localStorage.setItem('username', username);
         localStorage.setItem('token', data.token);
@@ -32,9 +35,6 @@ const LoginPage = () => {
 
   return (
     <div className="flex flex-col justify-between min-h-screen py-4 sm:py-12 px-4 sm:px-6 lg:px-8 bg-black">
-      <video autoPlay loop muted className="absolute w-full h-full object-cover" style={{ zIndex: -1 }}>
-        <source src="your-video-source.mp4" type="video/mp4" />
-      </video>
       <header className="text-center text-white py-2 sm:py-4 mb-4 sm:mb-8 w-full">
         <h1 className="font-bold text-2xl sm:text-4xl">Fyrstikken</h1>
       </header>

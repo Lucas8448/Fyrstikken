@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Vote = () => {
@@ -22,23 +22,33 @@ const Vote = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(null);
+  const [error, setError] = useState(null);
+  const categories = useMemo(() => {
+    return {
+      1: ['--Ingen valgt--', 'abc', '123'],
+      2: ['--Ingen valgt--', 'abc', '123'],
+      3: ['--Ingen valgt--', 'abc', '123'],
+      4: ['--Ingen valgt--', 'abc', '123'],
+      5: ['--Ingen valgt--', 'abc', '123'],
+      6: ['--Ingen valgt--', 'abc', '123'],
+      7: ['--Ingen valgt--', 'abc', '123'],
+      8: ['--Ingen valgt--', 'abc', '123'],
+      9: ['--Ingen valgt--', 'abc', '123'],
+      10: ['--Ingen valgt--', 'abc', '123'],
+      11: ['--Ingen valgt--', 'abc', '123'],
+      12: ['--Ingen valgt--', 'abc', '123'],
+      13: ['--Ingen valgt--', 'abc', '123'],
+      14: ['--Ingen valgt--', 'abc', '123'],
+    };
+  }, []);
 
-  const categories = {
-    1: ['--Ingen valgt--', 'abc', '123'],
-    2: ['--Ingen valgt--', 'abc', '123'],
-    3: ['--Ingen valgt--', 'abc', '123'],
-    4: ['--Ingen valgt--', 'abc', '123'],
-    5: ['--Ingen valgt--', 'abc', '123'],
-    6: ['--Ingen valgt--', 'abc', '123'],
-    7: ['--Ingen valgt--', 'abc', '123'],
-    8: ['--Ingen valgt--', 'abc', '123'],
-    9: ['--Ingen valgt--', 'abc', '123'],
-    10: ['--Ingen valgt--', 'abc', '123'],
-    11: ['--Ingen valgt--', 'abc', '123'],
-    12: ['--Ingen valgt--', 'abc', '123'],
-    13: ['--Ingen valgt--', 'abc', '123'],
-    14: ['--Ingen valgt--', 'abc', '123'],
-  };
+  useEffect(() => {
+    const initialVotes = {};
+    for (let category in categories) {
+      initialVotes[category] = 0;
+    }
+    setVotes(initialVotes);
+  }, [categories]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -61,7 +71,7 @@ const Vote = () => {
     setIsLoading(true);
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch('http://localhost:5000/vote', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/vote`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -69,6 +79,10 @@ const Vote = () => {
         },
         body: JSON.stringify({ votes: votes })
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit votes');
+      }
 
       const data = await response.json();
       if (data.success) {
@@ -78,6 +92,7 @@ const Vote = () => {
       }
     } catch (error) {
       console.error('Failed to submit votes', error);
+      setError(error.message);
       setSuccess(false);
     } finally {
       setIsLoading(false);
@@ -99,6 +114,7 @@ const Vote = () => {
             )
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
+            {error && <p className="text-red-500">{error}</p>}
               {Object.keys(categories).map((category) => (
                 <div key={category}>
                   <label>
@@ -117,6 +133,7 @@ const Vote = () => {
                 Submit Vote
               </button>
             </form>
+            
           )}
         </>
       ) : (
