@@ -4,13 +4,40 @@ import { useNavigate } from 'react-router-dom';
 const Vote = () => {
   const navigate = useNavigate();
   const [authenticated, setAuthenticated] = useState(false);
-  const [votes, setVotes] = useState({});
+  const [votes, setVotes] = useState({
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+    6: 0,
+    7: 0,
+    8: 0,
+    9: 0,
+    10: 0,
+    11: 0,
+    12: 0,
+    13: 0,
+    14: 0
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(null);
 
   const categories = {
-    1: ['xyz', 'abc', '123'],
-    2: ['option1', 'option2', 'option3']
+    1: ['--Ingen valgt--', 'abc', '123'],
+    2: ['--Ingen valgt--', 'abc', '123'],
+    3: ['--Ingen valgt--', 'abc', '123'],
+    4: ['--Ingen valgt--', 'abc', '123'],
+    5: ['--Ingen valgt--', 'abc', '123'],
+    6: ['--Ingen valgt--', 'abc', '123'],
+    7: ['--Ingen valgt--', 'abc', '123'],
+    8: ['--Ingen valgt--', 'abc', '123'],
+    9: ['--Ingen valgt--', 'abc', '123'],
+    10: ['--Ingen valgt--', 'abc', '123'],
+    11: ['--Ingen valgt--', 'abc', '123'],
+    12: ['--Ingen valgt--', 'abc', '123'],
+    13: ['--Ingen valgt--', 'abc', '123'],
+    14: ['--Ingen valgt--', 'abc', '123'],
   };
 
   useEffect(() => {
@@ -25,7 +52,7 @@ const Vote = () => {
   const handleChange = (category, event) => {
     setVotes({
       ...votes,
-      [category]: event.target.value
+      [category]: parseInt(event.target.value, 10)
     });
   };
 
@@ -78,7 +105,7 @@ const Vote = () => {
                     Select for category {category}:
                     <select name={`category-${category}`} className="ml-2" onChange={(e) => handleChange(category, e)}>
                       {categories[category].map((option, index) => (
-                        <option key={index} value={index + 1}>
+                        <option key={index} value={index}>
                           {option}
                         </option>
                       ))}
