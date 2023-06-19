@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Vote = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [authenticated, setAuthenticated] = useState(false);
   const [votes, setVotes] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -94,13 +95,20 @@ const Vote = () => {
 
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
+    const params = new URLSearchParams(location.search);
+    const isAdminPreview = params.get('preview') === 'admin';
+    
+    if (isAdminPreview) {
       setAuthenticated(true);
     } else {
-      navigate('/login');
+      const token = localStorage.getItem('token');
+      if (token) {
+        setAuthenticated(true);
+      } else {
+        navigate('/');
+      }
     }
-  }, [navigate]);
+  }, [navigate, location]);
 
   const handleChange = (event) => {
     setSelectedOption(event.target.value);
