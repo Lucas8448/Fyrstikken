@@ -66,7 +66,7 @@ const LoginPage = () => {
       </div>
       <footer className="text-center text-white py-2 sm:py-4 w-full">
         <p className="font-bold text-lg sm:text-xl">Fyrstikkalleen Skole (F21)</p>
-        <p>Følg oss på Instagram</p>
+        <p>Laget av Lucas, 1IMA</p>
       </footer>
     </div>
   );
