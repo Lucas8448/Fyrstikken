@@ -156,7 +156,7 @@ const Vote = () => {
   };
 
   return (
-    <div className="flex flex-col items-center bg-gray-100 overflow-y-auto max-h-screen">
+    <div className="flex flex-col items-center bg-gray-100 overflow-y-auto max-h-screen svh">
       {authenticated ? (
         <>
           <h1 className="text-5xl font-bold text-gray-800 mb-4">Gi din stemme til publikums favoritt</h1>

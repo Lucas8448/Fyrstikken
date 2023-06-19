@@ -31,7 +31,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex flex-col justify-between min-h-screen py-4 sm:py-12 px-4 sm:px-6 lg:px-8 bg-black">
+    <div className="flex flex-col justify-between py-4 sm:py-12 px-4 sm:px-6 lg:px-8 bg-black svh">
       <video autoPlay loop muted className="absolute w-full h-full object-cover" style={{ zIndex: -1 }}>
         <source src="your-video-source.mp4" type="video/mp4" />
       </video>
