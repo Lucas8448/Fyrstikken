@@ -156,54 +156,62 @@ const Vote = () => {
   };
 
   return (
-    <div className="flex flex-col items-center bg-gray-100 overflow-y-auto max-h-screen svh">
-      {authenticated ? (
-        <>
-          <h1 className="text-5xl font-bold text-gray-800 mb-4">Gi din stemme til publikums favoritt</h1>
-          {isLoading ? (
-            <p>Loading...</p>
-          ) : success !== null ? (
-            success ? (
-              <p className="text-green-500">Stemmen din har blitt sendt!</p>
-            ) : (
-              <p className="text-red-500">Noe gikk feil. Vennligst prøv igjen.</p>
-            )
+    <div className="flex flex-col items-center bg-gray-200 overflow-y-auto max-h-screen svh p-6">
+    {authenticated ? (
+      <>
+        <h1 className="text-5xl font-bold text-gray-900 my-6">Gi din stemme til publikums favoritt</h1>
+        <h2 className="text-3xl font-semibold text-gray-800 my-6">Trykk på kategoritittel for å se innslagene på F21 sin hjemmeside</h2>
+        {isLoading ? (
+          <div className="flex items-center space-x-4">
+            <div className="loader"></div>
+            <p>Laster...</p>
+          </div>
+        ) : success !== null ? (
+          success ? (
+            <p className="text-green-600 text-lg font-semibold my-4">Stemmen din har blitt sendt!</p>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {Object.keys(categories).map((category) => (
-                <div key={category}>
-                  <a href={categories[category].link} target="_blank" rel="noopener noreferrer">
-                    <p className="font-bold">{category}</p>
-                  </a>
-                  {categories[category].contestants.map((option, index) => (
-                    <label key={index} className="flex items-center">
-                      <input
-                        type="radio"
-                        name={category}
-                        value={`${categories[category].Id}-${index}`}
-                        onChange={handleChange}
-                        checked={selectedOption === `${categories[category].Id}-${index}`}
-                      />
-                      <span className="ml-2">{option}</span>
-                    </label>
-                  ))}
-                </div>
-              ))}
-              <button
-                type="submit"
-                className="py-2 px-4 bg-blue-500 text-white rounded"
-                onClick={handleVote}
-                disabled={!selectedOption}
-              >
-                Send inn stemme
-              </button>
-            </form>
-          )}
-        </>
-      ) : (
+            <p className="text-red-700 text-lg font-semibold my-4">Noe gikk feil. Vennligst prøv igjen.</p>
+          )
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {Object.keys(categories).map((category) => (
+              <div key={category} className="mb-6">
+                <a href={categories[category].link} target="_blank" rel="noopener noreferrer" className="font-bold text-gray-800">
+                  <p>{category}</p>
+                </a>
+                {categories[category].contestants.map((option, index) => (
+                  <label key={index} className="flex items-center space-x-4">
+                    <input
+                      type="radio"
+                      name={category}
+                      value={`${categories[category].Id}-${index}`}
+                      onChange={handleChange}
+                      checked={selectedOption === `${categories[category].Id}-${index}`}
+                      className="form-radio text-blue-500"
+                    />
+                    <span className="text-gray-700">{option}</span>
+                  </label>
+                ))}
+              </div>
+            ))}
+            <button
+              type="submit"
+              className="py-3 px-6 text-white rounded-lg shadow-md bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleVote}
+              disabled={!selectedOption}
+            >
+              Send inn stemme
+            </button>
+          </form>
+        )}
+      </>
+    ) : (
+      <div className="flex items-center space-x-4">
+        <div className="loader"></div>
         <p>Laster...</p>
-      )}
-    </div>
+      </div>
+    )}
+  </div>
   );
 };
 
