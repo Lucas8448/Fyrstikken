@@ -124,7 +124,7 @@ const Vote = () => {
         obj[index + 1] = vote;
         return obj;
       }, {});
-      const response = await fetch('https://api.f21.site/vote', {
+      const response = await fetch('https://stem.f21.site/vote', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

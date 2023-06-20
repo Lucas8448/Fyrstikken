@@ -11,7 +11,7 @@ const LoginPage = () => {
     const password = event.target.password.value;
 
     try {
-      const response = await fetch('https://api.f21.site/login', {
+      const response = await fetch('https://stem.f21.site/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: username, password: password }),
